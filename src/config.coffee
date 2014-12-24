@@ -18,27 +18,26 @@ module.exports = (config)->
 
   ScriptWatcher.renderers.es6 = (code, path, flags = {})->
     options =
-      modules: 'instantiate'
-      moduleName: @modulename path
+      modules: 'register'
+      sourceName: @pathpart path
+      moduleName: @pathpart path
       filename: @pathpart path
-      sourceMaps: 'inline'
+      sourceMaps: 'memory'
       asyncFunctions: yes
       arrayComprehension: yes
       generatorComprehension: yes
       exopnentiation: yes
       symbols: yes
 
+    console.log options.filename
+
     options[flag] = val for own flag, val of flags
 
-    content = traceur.compile(code, options)
+    compiler = new traceur.NodeCompiler(options)
+    content = compiler.compile(code, options.sourceName)
+    content = content.replace(new RegExp('^//# source.*$'), '')
 
-    # Pull out the sourcemapcomment
-    [comment, b64] = new RegExp(
-      '\n//# sourceMappingURL=data:application/json;base64,(.+)'
-    ).exec(content)
-    content = content.replace(comment, '')
-
-    sourceMap = JSON.parse(Buffer(b64, 'base64').toString())
+    sourceMap = compiler.getSourceMap()
     sourceMap.file = options.filename
     sourceMap.sources = [ options.filename ]
     sourceMap.sourcesContent = [ code ]
@@ -54,8 +53,7 @@ module.exports = (config)->
 
   ScriptWatcher.renderers.ats = (code, path)->
     options =
-      annotations: yes
-      classProperties: yes
+      atscript: yes
     ScriptWatcher.renderers.ts.call this, code, path, options
 
   return config

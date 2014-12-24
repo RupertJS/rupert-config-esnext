@@ -1,0 +1,9 @@
+@Component()
+export class MyApp {
+  server: Server;
+  @Bind('name') name:string;
+  @Event('foo') fooFn:Function;
+  @Inject()
+  constructor(@parent server:Server) {}
+  greet():string {}
+}

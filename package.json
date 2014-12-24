@@ -16,7 +16,7 @@
   "author": "David Souther <davidsouther@gmail.com> (https://davidsouther.com/)",
   "license": "ISC",
   "dependencies": {
-    "traceur": "0.0.74"
+    "traceur": "^0.0.79"
   },
   "devDependencies": {
     "coffee-script": "^1.8.0",
