@@ -1,5 +1,3 @@
-require('coffee-script/register')
-
 config =
   name: 'rupert-config-esnext.test'
   root: __dirname
